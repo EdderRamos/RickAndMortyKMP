@@ -13,22 +13,20 @@ import platform.Foundation.NSUserDomainMask
 
 fun getDatabase(): RickMortyDatabase {
     val dbFile = "${fileDirectory()}/$DATABASE_NAME"
-    return Room.databaseBuilder<RickMortyDatabase>(name =dbFile)
+    return Room.databaseBuilder<RickMortyDatabase>(name = dbFile)
         .setDriver(BundledSQLiteDriver())
         .setQueryCoroutineContext(Dispatchers.IO)
         .build()
 }
 
 
-
-
 @OptIn(ExperimentalForeignApi::class)
 private fun fileDirectory(): String {
-    val documentDirectory:NSURL?= NSFileManager.defaultManager.URLForDirectory(
+    val documentDirectory: NSURL? = NSFileManager.defaultManager.URLForDirectory(
         directory = NSDocumentDirectory,
         inDomain = NSUserDomainMask,
         appropriateForURL = null,
-        create= false,
+        create = false,
         error = null
     )
     return requireNotNull(documentDirectory).path!!

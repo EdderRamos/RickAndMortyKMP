@@ -8,7 +8,7 @@ import org.koin.android.ext.koin.androidLogger
 class RickMortyApp : Application() {
     override fun onCreate() {
         super.onCreate()
-        initKoin{
+        initKoin {
             androidLogger()
             androidContext(this@RickMortyApp)
         }
