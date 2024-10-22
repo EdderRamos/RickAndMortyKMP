@@ -2,6 +2,7 @@ package com.edlabcode.rickmortyapp.ui.home.tabs.characters
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import com.edlabcode.rickmortyapp.domain.GetRandomCharacter
 import com.edlabcode.rickmortyapp.domain.Repository
 import kotlinx.coroutines.Dispatchers
@@ -27,11 +28,16 @@ class CharactersViewModel(
             }
             _state.update { it.copy(characterOfTheDay = result) }
         }
+
         getAllCharacters()
     }
 
     private fun getAllCharacters() {
-        _state.update { it.copy(characters = repository.getAllCharacters()) }
+        _state.update {
+            it.copy(
+                characters = repository.getAllCharacters().cachedIn(viewModelScope)
+            )
+        }
     }
 
 }

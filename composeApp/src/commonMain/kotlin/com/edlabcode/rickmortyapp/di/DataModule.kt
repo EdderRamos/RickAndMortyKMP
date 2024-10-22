@@ -3,6 +3,7 @@ package com.edlabcode.rickmortyapp.di
 import com.edlabcode.rickmortyapp.data.RepositoryImpl
 import com.edlabcode.rickmortyapp.data.remote.ApiService
 import com.edlabcode.rickmortyapp.data.remote.paging.CharactersPagingSource
+import com.edlabcode.rickmortyapp.data.remote.paging.EpisodesPagingSource
 import com.edlabcode.rickmortyapp.domain.Repository
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.DefaultRequest
@@ -30,6 +31,7 @@ val dataModule = module {
     }
 
     factoryOf(::ApiService)
-    factory<Repository> { RepositoryImpl(get(), get()) }
+    factory<Repository> { RepositoryImpl(get(), get(), get(), get()) }
     factoryOf(::CharactersPagingSource)
+    factoryOf(::EpisodesPagingSource)
 }

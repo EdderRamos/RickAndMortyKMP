@@ -5,7 +5,8 @@ import androidx.paging.PagingState
 import com.edlabcode.rickmortyapp.data.remote.ApiService
 import com.edlabcode.rickmortyapp.domain.model.CharacterModel
 
-class CharactersPagingSource(private val api: ApiService) : PagingSource<Int, CharacterModel>() {
+class
+CharactersPagingSource(private val api: ApiService) : PagingSource<Int, CharacterModel>() {
     override fun getRefreshKey(state: PagingState<Int, CharacterModel>): Int? {
         return state.anchorPosition
     }
@@ -18,7 +19,7 @@ class CharactersPagingSource(private val api: ApiService) : PagingSource<Int, Ch
             val prev = if (page > 0) -1 else null
             val next = if (response.info.next != null) page + 1 else null
             LoadResult.Page(
-                data = characters.map { it.toDomain()  },
+                data = characters.map { it.toDomain() },
                 prevKey = prev,
                 nextKey = next
             )
