@@ -47,20 +47,23 @@ import rickmortyapp.composeapp.generated.resources.rickface
 
 @OptIn(KoinExperimentalAPI::class)
 @Composable
-fun CharactersScreen() {
+fun CharactersScreen(
+    navigateToDetail: (CharacterModel) -> Unit
+) {
     val charactersViewModel = koinViewModel<CharactersViewModel>()
     val state by charactersViewModel.state.collectAsState()
 
     val characters = state.characters.collectAsLazyPagingItems()
 
-    CharactersGridList(characters, state.characterOfTheDay)
+    CharactersGridList(characters, state.characterOfTheDay, onItemSelected = navigateToDetail)
 
 }
 
 @Composable
 fun CharactersGridList(
     characters: LazyPagingItems<CharacterModel>,
-    characterOfTheDay: CharacterModel?
+    characterOfTheDay: CharacterModel?,
+    onItemSelected: (CharacterModel) -> Unit
 ) {
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
@@ -92,7 +95,7 @@ fun CharactersGridList(
             else -> {
                 items(characters.itemCount) { pos ->
                     characters[pos]?.let { characterModel ->
-                        CharacterItemList(characterModel)
+                        CharacterItemList(characterModel) { onItemSelected(characterModel) }
                     }
                 }
                 if (characters.loadState.append is LoadState.Loading) {
@@ -116,7 +119,10 @@ fun CharactersGridList(
 }
 
 @Composable
-fun CharacterItemList(characterModel: CharacterModel) {
+fun CharacterItemList(
+    characterModel: CharacterModel,
+    onItemSelected: () -> Unit
+) {
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(24))
@@ -125,7 +131,7 @@ fun CharacterItemList(characterModel: CharacterModel) {
                 shape = RoundedCornerShape(0, 24, 0, 24)
             ).fillMaxWidth()
             .height(150.dp)
-            .clickable { },
+            .clickable { onItemSelected() },
         contentAlignment = Alignment.BottomCenter,
     ) {
         AsyncImage(

@@ -1,15 +1,26 @@
 package com.edlabcode.rickmortyapp.ui.home.tabs.episodes
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -20,11 +31,13 @@ import com.edlabcode.rickmortyapp.domain.model.SeasonEpisode
 import com.edlabcode.rickmortyapp.ui.core.components.PagingLoading
 import com.edlabcode.rickmortyapp.ui.core.components.PagingType
 import com.edlabcode.rickmortyapp.ui.core.components.PagingWrapper
+import com.edlabcode.rickmortyapp.ui.core.components.VideoPlayer
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 import rickmortyapp.composeapp.generated.resources.Res
+import rickmortyapp.composeapp.generated.resources.portal
 import rickmortyapp.composeapp.generated.resources.rickface
 import rickmortyapp.composeapp.generated.resources.season1
 import rickmortyapp.composeapp.generated.resources.season2
@@ -41,7 +54,7 @@ fun EpisodesScreen() {
     val state by episodesViewmodel.state.collectAsState()
     val episodes = state.episodes.collectAsLazyPagingItems()
 
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Yellow)
@@ -50,20 +63,56 @@ fun EpisodesScreen() {
             pagingType = PagingType.ROW,
             pagingItems = episodes,
             initialView = { PagingLoading() },
-            itemView = { data -> EpisodeItemList(data) }
+            itemView = { data -> EpisodeItemList(data) { url -> episodesViewmodel.onPlaySelected(url) } }
         )
+        EpisodePlayer(state.playVideo) { episodesViewmodel.onPlaySelected("") }
     }
 }
 
 @Composable
-private fun EpisodeItemList(data: EpisodeModel) {
+private fun EpisodePlayer(playVideo: String, onCloseVideo: () -> Unit) {
+    AnimatedVisibility(visible = playVideo.isNotBlank()) {
+        ElevatedCard(
+            modifier = Modifier.fillMaxWidth().height(250.dp).padding(16.dp)
+                .border(
+                    3.dp, color = Color.Green,
+                    shape = CardDefaults.elevatedShape
+                )
+        ) {
+            Box(modifier = Modifier.background(Color.Black)) {
+                Box(
+                    modifier = Modifier.padding(12.dp).background(Color.Black),
+                    contentAlignment = Alignment.Center
+                ) {
+                    VideoPlayer(
+                        modifier = Modifier.fillMaxWidth().height(200.dp),
+                        playVideo
+                    )
+                }
+                Row {
+                    Spacer(modifier = Modifier.weight(1f))
+                    Image(painterResource(Res.drawable.portal),
+                        contentDescription = null,
+                        modifier = Modifier.padding(8.dp).size(40.dp)
+                            .clickable { onCloseVideo() }
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun EpisodeItemList(data: EpisodeModel, onEpisodeSelected: (String) -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth()
             .height(150.dp)
+            .clickable { onEpisodeSelected(data.videoURL) }
+            .padding(10.dp)
     ) {
         Image(
             painter = painterResource(getResourceBySeason(data.season)),
-            contentScale = ContentScale.Crop,
+            contentScale = ContentScale.Fit,
             contentDescription = null
         )
     }

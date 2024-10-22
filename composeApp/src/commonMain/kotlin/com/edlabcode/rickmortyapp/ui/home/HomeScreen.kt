@@ -19,14 +19,19 @@ import com.edlabcode.rickmortyapp.ui.core.navigation.bootomnavigation.BottomBarI
 import com.edlabcode.rickmortyapp.ui.core.navigation.bootomnavigation.NavigationBottomWrapper
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(mainNavController: NavHostController) {
     val items = listOf(Episodes(), Characters())
     val navController = rememberNavController()
 
     Scaffold(
         bottomBar = { BottomNavigation(items, navController) }
     ) { padding ->
-        Box(modifier = Modifier.padding(padding)) { NavigationBottomWrapper(navController) }
+        Box(modifier = Modifier.padding(padding)) {
+            NavigationBottomWrapper(
+                navController,
+                mainNavController
+            )
+        }
     }
 
 }

@@ -17,4 +17,6 @@ class EpisodesViewModel(
     init {
         _state.update { it.copy(episodes = repository.getAllEpisodes().cachedIn(viewModelScope)) }
     }
+
+    fun onPlaySelected(url: String) = _state.update { state -> state.copy(playVideo = url) }
 }
