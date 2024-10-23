@@ -14,7 +14,11 @@ fun Preview() {
             1,
             image = "",
             isAlive = true,
-            name = "PEPE"
+            name = "PEPE",
+            species = "",
+            gender = "",
+            episodes = emptyList(),
+            origin = ""
         )
     )
 }
