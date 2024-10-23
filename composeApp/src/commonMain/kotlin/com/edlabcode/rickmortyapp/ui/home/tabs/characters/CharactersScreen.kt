@@ -5,6 +5,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -38,6 +40,9 @@ import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
 import coil3.compose.AsyncImage
 import com.edlabcode.rickmortyapp.domain.model.CharacterModel
+import com.edlabcode.rickmortyapp.ui.core.BackgroundPrimaryColor
+import com.edlabcode.rickmortyapp.ui.core.DefaultTextColor
+import com.edlabcode.rickmortyapp.ui.core.Green
 import com.edlabcode.rickmortyapp.ui.core.ex.vertical
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -66,12 +71,24 @@ fun CharactersGridList(
     onItemSelected: (CharacterModel) -> Unit
 ) {
     LazyVerticalGrid(
-        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+        modifier = Modifier.fillMaxSize().background(BackgroundPrimaryColor)
+            .padding(horizontal = 16.dp),
         columns = GridCells.Fixed(2),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        item(span = { GridItemSpan(2) }) { CharacterOfTheDay(characterOfTheDay) }
+        item(span = { GridItemSpan(2) }) {
+            Column {
+                Text(
+                    "Characters",
+                    color = DefaultTextColor,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Spacer(Modifier.height(6.dp))
+                CharacterOfTheDay(characterOfTheDay)
+            }
+        }
 
         when {
             characters.loadState.refresh is LoadState.Loading && characters.itemCount == 0 -> {
@@ -82,7 +99,7 @@ fun CharactersGridList(
                     ) {
                         CircularProgressIndicator(
                             modifier = Modifier.size(60.dp),
-                            color = Color.Green
+                            color = Green
                         )
                     }
                 }
@@ -108,7 +125,7 @@ fun CharactersGridList(
                             CircularProgressIndicator(
                                 modifier = Modifier
                                     .size(62.dp),
-                                color = Color.Red
+                                color = Green
                             )
                         }
                     }
@@ -127,7 +144,7 @@ fun CharacterItemList(
         modifier = Modifier
             .clip(RoundedCornerShape(24))
             .border(
-                2.dp, color = Color.Green,
+                2.dp, color = Green,
                 shape = RoundedCornerShape(0, 24, 0, 24)
             ).fillMaxWidth()
             .height(150.dp)
