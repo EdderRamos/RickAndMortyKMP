@@ -2,6 +2,7 @@ package com.edlabcode.rickmortyapp.ui.datail
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +21,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -35,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.edlabcode.rickmortyapp.domain.model.CharacterModel
 import com.edlabcode.rickmortyapp.domain.model.EpisodeModel
+import com.edlabcode.rickmortyapp.isDesktop
 import com.edlabcode.rickmortyapp.ui.core.BackgroundPrimaryColor
 import com.edlabcode.rickmortyapp.ui.core.BackgroundSecondaryColor
 import com.edlabcode.rickmortyapp.ui.core.BackgroundTertiaryColor
@@ -48,11 +51,12 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.parameter.parameterSetOf
 import rickmortyapp.composeapp.generated.resources.Res
+import rickmortyapp.composeapp.generated.resources.back
 import rickmortyapp.composeapp.generated.resources.space
 
 @OptIn(KoinExperimentalAPI::class)
 @Composable
-fun CharacterDetailScreen(characterModel: CharacterModel) {
+fun CharacterDetailScreen(characterModel: CharacterModel, onBack: () -> Unit) {
     val characterDetailModel =
         koinViewModel<CharacterDetailViewModel>(parameters = { parameterSetOf(characterModel) })
     val state by characterDetailModel.state.collectAsState()
@@ -62,7 +66,7 @@ fun CharacterDetailScreen(characterModel: CharacterModel) {
         modifier = Modifier.fillMaxSize().background(BackgroundPrimaryColor)
             .verticalScroll(scrollState)
     ) {
-        MainHeader(state.characterModel)
+        MainHeader(state.characterModel, onBack = onBack)
         Spacer(modifier = Modifier.height(12.dp))
         Column(
             modifier = Modifier.fillMaxSize()
@@ -110,7 +114,10 @@ fun EpisodeItem(episode: EpisodeModel) {
 }
 
 @Composable
-private fun MainHeader(characterModel: CharacterModel) {
+private fun MainHeader(
+    characterModel: CharacterModel,
+    onBack: () -> Unit
+) {
     Box(modifier = Modifier.fillMaxWidth().height(300.dp)) {
         Image(
             painter = painterResource(Res.drawable.space),
@@ -118,6 +125,13 @@ private fun MainHeader(characterModel: CharacterModel) {
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxWidth()
         )
+        if (isDesktop()) {
+            Icon(
+                painter = painterResource(Res.drawable.back), contentDescription = null,
+                modifier = Modifier.padding(16.dp).size(24.dp).clickable { onBack() },
+                tint = Color.White
+            )
+        }
         CharacterHeader(characterModel)
     }
 }

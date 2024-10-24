@@ -3,7 +3,6 @@ package com.edlabcode.rickmortyapp.ui.home.tabs.characters
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,10 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
@@ -35,14 +30,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.paging.LoadState
 import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
 import coil3.compose.AsyncImage
 import com.edlabcode.rickmortyapp.domain.model.CharacterModel
-import com.edlabcode.rickmortyapp.ui.core.BackgroundPrimaryColor
 import com.edlabcode.rickmortyapp.ui.core.DefaultTextColor
 import com.edlabcode.rickmortyapp.ui.core.Green
+import com.edlabcode.rickmortyapp.ui.core.components.PagingLoading
+import com.edlabcode.rickmortyapp.ui.core.components.PagingType
+import com.edlabcode.rickmortyapp.ui.core.components.PagingWrapper
 import com.edlabcode.rickmortyapp.ui.core.ex.vertical
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -70,14 +66,14 @@ fun CharactersGridList(
     characterOfTheDay: CharacterModel?,
     onItemSelected: (CharacterModel) -> Unit
 ) {
-    LazyVerticalGrid(
-        modifier = Modifier.fillMaxSize().background(BackgroundPrimaryColor)
-            .padding(horizontal = 16.dp),
-        columns = GridCells.Fixed(2),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        item(span = { GridItemSpan(2) }) {
+    PagingWrapper(
+        pagingType = PagingType.VERTICAL_GRID,
+        pagingItems = characters,
+        initialView = { PagingLoading() },
+        itemView = { data ->
+            CharacterItemList(data) { onItemSelected(data) }
+        },
+        header = {
             Column {
                 Text(
                     "Characters",
@@ -89,50 +85,7 @@ fun CharactersGridList(
                 CharacterOfTheDay(characterOfTheDay)
             }
         }
-
-        when {
-            characters.loadState.refresh is LoadState.Loading && characters.itemCount == 0 -> {
-                item(span = { GridItemSpan(2) }) {
-                    Box(
-                        modifier = Modifier.fillMaxWidth(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(60.dp),
-                            color = Green
-                        )
-                    }
-                }
-            }
-
-            characters.loadState.refresh is LoadState.NotLoading && characters.itemCount == 0 -> {
-                item { Text("No hay personajes :(") }
-            }
-
-            else -> {
-                items(characters.itemCount) { pos ->
-                    characters[pos]?.let { characterModel ->
-                        CharacterItemList(characterModel) { onItemSelected(characterModel) }
-                    }
-                }
-                if (characters.loadState.append is LoadState.Loading) {
-                    item(span = { GridItemSpan(2) }) {
-                        Box(
-                            modifier = Modifier.fillMaxHeight()
-                                .height(100.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator(
-                                modifier = Modifier
-                                    .size(62.dp),
-                                color = Green
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
+    )
 }
 
 @Composable

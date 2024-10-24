@@ -8,7 +8,7 @@ fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
         title = "Rick and Morty App"
-    ){
+    ) {
         initKoin()
         App()
     }
