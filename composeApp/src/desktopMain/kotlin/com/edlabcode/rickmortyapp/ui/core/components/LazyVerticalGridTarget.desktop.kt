@@ -26,7 +26,7 @@ actual fun <T : Any> LazyVerticalGridTarget(
     val state = rememberLazyGridState()
     Box(contentAlignment = Alignment.TopEnd) {
         LazyVerticalGrid(
-            state = state, columns = GridCells.Adaptive(100.dp),
+            state = state, columns = GridCells.Adaptive(180.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier.background(BackgroundPrimaryColor)

@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import app.cash.paging.compose.collectAsLazyPagingItems
 import com.edlabcode.rickmortyapp.domain.model.EpisodeModel
 import com.edlabcode.rickmortyapp.domain.model.SeasonEpisode
+import com.edlabcode.rickmortyapp.isDesktop
 import com.edlabcode.rickmortyapp.ui.core.BackgroundPrimaryColor
 import com.edlabcode.rickmortyapp.ui.core.BackgroundSecondaryColor
 import com.edlabcode.rickmortyapp.ui.core.DefaultTextColor
@@ -80,14 +81,15 @@ fun EpisodesScreen() {
 private fun EpisodePlayer(playVideo: String, onCloseVideo: () -> Unit) {
     AnimatedContent(playVideo.isNotBlank()) { condition ->
         if (condition) {
+            val height = if (isDesktop()) 600.dp else 250.dp
             ElevatedCard(
-                modifier = Modifier.fillMaxWidth().height(250.dp).padding(16.dp)
+                modifier = Modifier.fillMaxWidth().height(height).padding(16.dp)
                     .border(
                         3.dp, color = Color.Green,
                         shape = CardDefaults.elevatedShape
                     )
             ) {
-                Box(modifier = Modifier.background(Color.Black)) {
+                Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
                     Box(
                         modifier = Modifier.padding(12.dp).background(Color.Black),
                         contentAlignment = Alignment.Center
