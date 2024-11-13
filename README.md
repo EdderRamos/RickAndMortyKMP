@@ -4,8 +4,7 @@
 
 # Rick and Morty App - CMP
 
-A app of a KMP and CMP course by Aristidevs. This is a perfect example how to create a App for Android, following the best practices for Multifplaform development -> Android, iOS, Desktop:
-
+An app for the KMP and CMP course by Aristidevs. This is a perfect example of how to create an app for Android, following best practices for Multiplatform development — Android, iOS, and Desktop.
 
 ## Authors
 
